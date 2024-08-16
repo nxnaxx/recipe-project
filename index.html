@@ -3,7 +3,210 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Recipe</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./index.css" />
+    <script src="./index.js" defer></script>
   </head>
-  <body></body>
+  <body>
+    <header>
+      <h1>
+        <a href="/"> <img src="./assets/logo2.svg" alt="main logo" /> </a>
+      </h1>
+    </header>
+    <div class="banner-con">
+      <div class="banner">
+        <img src="./assets/banner.png" alt="banner" />
+      </div>
+    </div>
+    <main>
+      <div class="search-form">
+        <input type="text" placeholder="음식 이름 또는 재료로 검색하세요." />
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <section class="category-con">
+        <h2>카테고리</h2>
+        <ul>
+          <li class="active">
+            <img src="./assets/entire.svg" alt="전체" /><span>전체</span>
+          </li>
+          <li><img src="./assets/rice.svg" alt="밥" /><span>밥</span></li>
+          <li>
+            <img src="./assets/side-dish.svg" alt="반찬" /><span>반찬</span>
+          </li>
+          <li>
+            <img src="./assets/soup.svg" alt="국/찌개" /><span>국/찌개</span>
+          </li>
+          <li>
+            <img src="./assets/hot-plate.svg" alt="일품" /><span>일품</span>
+          </li>
+          <li>
+            <img src="./assets/dessert.svg" alt="후식" /><span>후식</span>
+          </li>
+        </ul>
+      </section>
+      <section class="cards-con">
+        <div class="cards-top">
+          <p><span>1,000</span> 개의 레시피</p>
+          <button class="fridge-btn">
+            <img src="./assets/fridge-icon.svg" alt="fridge icon" />
+          </button>
+        </div>
+        <ul>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>유자꿀드레싱을 곁들인 곤드레 단호박 크로켓 샐러드</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>브로콜리 컬리플라워 샐러드와 두유 요거트 소스</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+          <li class="recipe-card">
+            <div class="recipe-img">
+              <img src="./assets/image1.png" alt="" />
+            </div>
+            <div class="card-content">
+              <p>저염 된장으로 맛을 낸 황태해장국</p>
+              <div class="recipe-details">
+                <span>100kcal</span>
+                <div class="category-tag">국/찌개</div>
+              </div>
+            </div>
+            <a href="/"></a>
+          </li>
+        </ul>
+        <div class="pagination">
+          <button class="prev-btn">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="num-btn active">1</button>
+          <button class="num-btn">2</button>
+          <button class="num-btn">3</button>
+          <button class="num-btn">4</button>
+          <button class="num-btn">5</button>
+          <button class="num-btn">6</button>
+          <button class="next-btn">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-inner">
+        <div class="social-links">
+          <a href="https://www.facebook.com/">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="https://www.instagram.com/">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://mail.google.com">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
