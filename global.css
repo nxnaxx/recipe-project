@@ -20,9 +20,9 @@
   --primary-light: #ffbc66;
   --primary-subtle: #ffeace;
   --dark-1: #2d2f2d;
-  --dark-2: #c6c8c6;
-  --dark-3: #dfe0df;
-  --dark-4: #fafafa;
+  --dark-2: #5f635f;
+  --dark-3: #c6c8c6;
+  --dark-4: #dfe0df;
   --white: #ffffff;
 }
 
@@ -38,7 +38,11 @@
 }
 h2 {
   font-size: 1.875rem;
-  font-weight: var(--fw-b);
+  font-weight: var(--fw-sb);
+}
+h3 {
+  font-size: 1.5rem;
+  font-weight: var(--fw-sb);
 }
 ul {
   list-style: none;

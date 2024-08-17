@@ -197,7 +197,7 @@ main {
   box-shadow: 0 4px 12px 0 rgb(45 47 45 / 10%);
 }
 .recipe-card .bookmark-btn > i {
-  color: var(--dark-2);
+  color: var(--dark-3);
   font-size: 18px;
 }
 .recipe-card .bookmark-btn.active > i {
