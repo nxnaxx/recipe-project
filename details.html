@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./global.css" />
+    <link rel="stylesheet" href="./details.css" />
+    <script src="./details.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>
+        <a href="/"> <img src="./assets/logo2.svg" alt="main logo" /></a>
+      </h1>
+    </header>
+    <main>
+      <div class="category">반찬</div>
+      <div class="title-wrap">
+        <h2 class="title">스트로베리 샐러드</h2>
+        <button class="bookmark-btn active">
+          <i class="fa-solid fa-bookmark"></i>
+        </button>
+        <button class="share-btn">
+          <i class="fa-solid fa-share-nodes"></i>
+        </button>
+      </div>
+      <section class="content-con">
+        <div class="contents">
+          <div class="recipe-img">
+            <img src="./assets/image2.png" alt="image 2" />
+          </div>
+          <div class="ingredients">
+            <h3>재료</h3>
+            <ul>
+              <li>
+                <input type="checkbox" class="checkbox" />
+                <span class="checkmark"></span>
+                <span>딸기 70g(7개)</span>
+              </li>
+              <li>
+                <input type="checkbox" class="checkbox" checked />
+                <span class="checkmark"></span>
+                <span>플레인요거트 85g(1개)</span>
+              </li>
+              <li>
+                <input type="checkbox" class="checkbox" checked />
+                <span class="checkmark"></span>
+                <span>양상추 70g(2장)</span>
+              </li>
+              <li>
+                <input type="checkbox" class="checkbox" checked />
+                <span class="checkmark"></span>
+                <span>메추리알 30g(3개)</span>
+              </li>
+              <li>
+                <input type="checkbox" class="checkbox" />
+                <span class="checkmark"></span>
+                <span>블루베리 15g(1큰술)</span>
+              </li>
+              <li>
+                <input type="checkbox" class="checkbox" checked />
+                <span class="checkmark"></span>
+                <span>식초 약간</span>
+              </li>
+              <li>
+                <input type="checkbox" class="checkbox" checked />
+                <span class="checkmark"></span>
+                <span>소금 약간</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <aside>
+          <div class="nutritional">
+            <p>영양성분</p>
+            <ul>
+              <li><span>칼로리</span><span>200kcal</span></li>
+              <li><span>탄수화물</span><span>40g</span></li>
+              <li><span>지방</span><span>4g</span></li>
+              <li><span>단백질</span><span>1g</span></li>
+              <li><span>나트륨</span><span>1,000mg</span></li>
+            </ul>
+          </div>
+          <div class="recipe-tip">
+            <p class="tip-title">
+              <i class="fa-solid fa-lightbulb"></i> 저감 조리법 TIP
+            </p>
+            <p class="tip-content">
+              딸기는 칼륨이 풍부하여 나트륨 배출에 뛰어나지만 칼슘이 부족한
+              과일이예요. 그렇기 때문에 칼슘이 풍부한 요거트나 기타 유제품과
+              함께 섭취하면 좋아요.
+            </p>
+          </div>
+          <div class="tags">
+            <p>태그</p>
+            <span># 딸기</span>
+          </div>
+        </aside>
+      </section>
+      <section class="steps-con">
+        <h3>조리 순서</h3>
+        <ul>
+          <li>
+            <div class="step-img">
+              <img src="./assets/step1.png" alt="step 1" />
+            </div>
+            <div class="step-num">1</div>
+            <p>
+              찬물이 담긴 냄비에 식초, 소금을 넣고 메추리알을 삶는다. 물이
+              끓어오르면 5분 정도 더 삶아 찬물에 헹군 후 껍질을 벗기고 반으로
+              자른다.
+            </p>
+          </li>
+          <li>
+            <div class="step-img">
+              <img src="./assets/step2.png" alt="step 2" />
+            </div>
+            <div class="step-num">2</div>
+            <p>
+              딸기를 흐르는 물에 가볍게 씻어 꼭지를 제거한 후 물기를 빼고 반으로
+              자른다.
+            </p>
+          </li>
+          <li>
+            <div class="step-img">
+              <img src="./assets/step3.png" alt="step 3" />
+            </div>
+            <div class="step-num">3</div>
+            <p>
+              양상추는 찬물에 담갔다가 물기를 빼고 한입 크기로 찢은 후 접시에
+              양상추, 딸기, 블루베리, 메추리알을 담고 플레인요거트를 끼얹는다.
+            </p>
+          </li>
+        </ul>
+      </section>
+      <button class="back-btn">목록으로</button>
+    </main>
+    <footer>
+      <div class="footer-inner">
+        <div class="social-links">
+          <a href="https://www.facebook.com/">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="https://www.instagram.com/">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://mail.google.com">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
