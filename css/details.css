@@ -1,8 +1,34 @@
 /* Main */
 main {
+  position: relative;
   max-width: 1280px;
   margin: 0 auto;
   padding: 48px 80px 96px 80px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100vh;
+  min-height: 400px;
+  background-color: var(--white);
+}
+.spinner {
+  position: relative;
+  animation: rotator 1.4s linear infinite;
+}
+.path {
+  stroke: var(--primary);
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: dash 1.4s ease-in-out infinite;
 }
 
 .category {
@@ -82,14 +108,18 @@ main {
   margin-bottom: 16px;
 }
 .ingredients ul {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: column;
   gap: 16px;
 }
 .ingredients ul li {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+.ingredients ul li > p {
+  font-weight: var(--fw-m);
 }
 .ingredients .checkbox {
   display: none;
@@ -122,24 +152,24 @@ main {
 }
 
 /* Aside */
-.nutritional {
+.nutrition {
   margin-bottom: 48px;
   padding: 24px 32px 32px 32px;
   border: 1px solid var(--dark-4);
   border-radius: 8px;
   box-shadow: 0 4px 8px 0 rgb(95 99 95 / 10%);
 }
-.nutritional > p {
+.nutrition > p {
   margin-bottom: 16px;
   font-size: var(--fs-xl);
   font-weight: var(--fw-sb);
 }
-.nutritional ul {
+.nutrition ul {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.nutritional ul li {
+.nutrition ul li {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -147,6 +177,7 @@ main {
   border-bottom: 1px solid var(--dark-3);
 }
 .recipe-tip {
+  min-height: 200px;
   margin-bottom: 48px;
   padding: 24px 32px;
   border-radius: 8px;
@@ -171,6 +202,7 @@ main {
   font-weight: var(--fw-sb);
 }
 .tags span {
+  margin-right: 8px;
   color: var(--dark-2);
 }
 

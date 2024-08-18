@@ -2,12 +2,16 @@ const $categoryList = document.getElementById('category');
 const $cardCount = document.getElementById('card-count');
 const $cardList = document.getElementById('card-list');
 
+const categoryCache = {};
 let isLoading = false;
 
-const fetchData = async (url) => {
+const fetchData = async (url, categoryId) => {
   try {
+    if (categoryCache[categoryId]) return categoryCache[categoryId];
+
     const response = await fetch(url);
     const data = await response.json();
+    categoryCache[categoryId] = data;
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -21,9 +25,12 @@ const createCardList = async (queryParams = {}) => {
   document.querySelector('.loading').style.display = 'flex';
 
   // mock server
-  const baseUrl = `https://fdbac7e9-cc88-4e30-9a85-03b4bd0e4f09.mock.pstmn.io/api/${API_KEY}/COOKRCP01/json/1/1000`;
+  const baseUrl = `https://b24ec182-58f9-4bde-932e-7428a89fac14.mock.pstmn.io/api/${API_KEY}/COOKRCP01/json/1/1000`;
   const queryString = new URLSearchParams(queryParams).toString();
-  const data = await fetchData(`${baseUrl}/${queryString}`);
+  const data = await fetchData(
+    `${baseUrl}/${queryString}`,
+    queryParams.RCP_PAT2,
+  );
   const recipes = data.COOKRCP01.row;
   const cardCount = data.COOKRCP01.total_count;
   const fragment = document.createDocumentFragment();
@@ -52,8 +59,8 @@ const createCardList = async (queryParams = {}) => {
                             )}</div>
                           </div>
                         </div>
-                        <a href="details.html?seq=${
-                          recipe.RCP_SEQ
+                        <a href="details.html?recipeName=${
+                          recipe.RCP_NM
                         }" id="details-link"></a>
                         `;
     fragment.appendChild(newCard);
@@ -86,5 +93,4 @@ const handleCategoryClick = async (e) => {
 };
 
 $categoryList.addEventListener('click', handleCategoryClick);
-
 createCardList();
