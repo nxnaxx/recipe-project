@@ -53,3 +53,58 @@ button {
   outline: none;
   cursor: pointer;
 }
+
+/* Header */
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 64px;
+  padding: 12px 0;
+  background-color: var(--primary-subtle);
+}
+header h1 {
+  cursor: pointer;
+}
+header a {
+  width: 164px;
+  height: 48px;
+}
+header .main-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Footer */
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-subtle);
+}
+.footer-inner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  padding: 24px 80px;
+}
+.social-links {
+  display: flex;
+  gap: 32px;
+}
+.social-links a {
+  width: 28px;
+  height: 28px;
+  text-align: center;
+}
+.social-links i {
+  color: var(--primary);
+  font-size: 28px;
+}
+.social-links i:hover {
+  color: var(--primary-light);
+}

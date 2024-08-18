@@ -1,42 +1,25 @@
-/* Header */
-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 64px;
-  padding: 12px 0;
-  background-color: var(--primary-subtle);
-}
-header h1 {
-  cursor: pointer;
-}
-header a {
-  width: 164px;
-  height: 48px;
-}
-header .main-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 /* Banner */
 .banner-con {
   width: 100%;
   max-width: 1104px;
   margin: 0 auto;
-  /* padding: 0 88px; */
+  padding-top: 48px;
 }
 .banner {
+  position: relative;
+  overflow: hidden;
   width: 100%;
+  padding-top: 24.28%;
+  border-radius: 8px;
   cursor: pointer;
 }
 .banner img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  border-radius: 16px;
+  object-fit: cover;
 }
 
 /* Main */
@@ -67,7 +50,7 @@ main {
   box-shadow: 0 0 4px 2px var(--primary-subtle);
 }
 .search-form input::placeholder {
-  color: var(--dark-2);
+  color: var(--dark-3);
 }
 .search-form button {
   display: inline-flex;
@@ -98,7 +81,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 40px;
+  gap: 32px;
 }
 .category-con ul li {
   display: flex;
@@ -106,8 +89,8 @@ main {
   justify-content: center;
   align-items: center;
   gap: 12px;
-  width: 136px;
-  height: 136px;
+  width: 120px;
+  height: 120px;
   border: 2px solid var(--primary);
   border-radius: 50%;
   background-color: var(--white);
@@ -120,8 +103,8 @@ main {
   background-color: var(--primary-subtle);
 }
 .category-con ul li img {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
 }
 .category-con ul li img svg {
   color: var(--white);
@@ -132,8 +115,33 @@ main {
 
 /* Section: card list */
 .cards-con {
+  position: relative;
   padding-bottom: 120px;
 }
+.cards-con .loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  min-height: 400px;
+  background-color: var(--white);
+}
+.cards-con .spinner {
+  position: relative;
+  animation: rotator 1.4s linear infinite;
+}
+.cards-con .path {
+  stroke: var(--primary);
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: dash 1.4s ease-in-out infinite;
+}
+
 .cards-top {
   display: flex;
   justify-content: space-between;
@@ -166,6 +174,7 @@ main {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
+  min-height: 400px;
   margin-bottom: 64px;
 }
 .recipe-card {
@@ -198,10 +207,11 @@ main {
 }
 .recipe-card .bookmark-btn > i {
   color: var(--dark-3);
-  font-size: 18px;
+  font-size: 20px;
 }
 .recipe-card .bookmark-btn.active > i {
   color: var(--primary);
+  font-size: 18px;
 }
 .recipe-card > a {
   position: absolute;
@@ -276,34 +286,26 @@ main {
   color: var(--primary);
 }
 
-/* Footer */
-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--primary-subtle);
+/* keyframes */
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
 }
-.footer-inner {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  max-width: 1280px;
-  padding: 24px 80px;
-}
-.social-links {
-  display: flex;
-  gap: 32px;
-}
-.social-links a {
-  width: 28px;
-  height: 28px;
-  text-align: center;
-}
-.social-links i {
-  color: var(--primary);
-  font-size: 28px;
-}
-.social-links i:hover {
-  color: var(--primary-light);
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg);
+  }
 }
