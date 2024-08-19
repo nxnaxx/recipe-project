@@ -31,6 +31,29 @@ main {
   animation: dash 1.4s ease-in-out infinite;
 }
 
+.toast {
+  display: hidden;
+  position: fixed;
+  top: 112px;
+  right: -300px;
+  padding: 12px 20px 12px 24px;
+  border-radius: 4px;
+  background-color: var(--dark-1);
+  color: var(--white);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.4s ease-in-out;
+}
+.toast.show {
+  display: block;
+  right: 24px;
+  animation: slideIn 0.4s forwards, fadeOut 0.4s 1.2s forwards;
+}
+.toast > i {
+  transform: rotate(45deg);
+  margin-right: 12px;
+  color: var(--white);
+}
+
 .category {
   width: fit-content;
   padding: 8px 20px;
@@ -264,4 +287,22 @@ main {
 }
 .back-btn:hover {
   background-color: var(--primary-light);
+}
+
+@keyframes slideIn {
+  from {
+    right: -300px;
+  }
+  to {
+    right: 24px;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
