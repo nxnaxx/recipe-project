@@ -1,8 +1,10 @@
 const $backToListBtn = document.getElementById('back-btn');
 const $bookmarkBtn = document.getElementById('bookmark-btn');
+const $shareBtn = document.getElementById('share-btn');
 // 새로고침 시 sessionStorage에 저장된 정보 불러오기 (api 재호출 방지)
 const storedData = sessionStorage.getItem('pageData');
 let recipeData = storedData ? JSON.parse(storedData) : null;
+let isToastVisible = false;
 
 const fetchData = async (url) => {
   try {
@@ -190,5 +192,31 @@ const toggleBookmark = () => {
   localStorage.setItem('bookmark', JSON.stringify(bookmarks));
 };
 
+// toast toggle
+const toggleToast = async () => {
+  const $toast = document.getElementById('toast');
+  $toast.classList.toggle('show');
+  isToastVisible = true;
+
+  setTimeout(() => {
+    $toast.classList.toggle('show');
+    isToastVisible = false;
+  }, 1500);
+};
+
+// URL 복사 및 toast 표시
+const showToast = async () => {
+  if (isToastVisible) return;
+
+  try {
+    const currentUrl = window.location.href;
+    await navigator.clipboard.writeText(currentUrl);
+    toggleToast();
+  } catch (error) {
+    console.error('clipboard copy 실패', error);
+  }
+};
+
 renderPage();
 $bookmarkBtn.addEventListener('click', toggleBookmark);
+$shareBtn.addEventListener('click', showToast);
