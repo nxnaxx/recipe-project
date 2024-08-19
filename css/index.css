@@ -117,17 +117,18 @@ main {
 .cards-con {
   position: relative;
   padding-bottom: 120px;
+  min-height: 1200px;
 }
-.cards-con .loading {
+.cards-con .loader {
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 1100;
   width: 100%;
-  min-height: 400px;
+  min-height: 800px;
   background-color: var(--white);
 }
 .cards-con .spinner {
@@ -284,6 +285,10 @@ main {
 .pagination .prev-btn:hover > i,
 .pagination .next-btn:hover > i {
   color: var(--primary);
+}
+.pagination .page-num-btns {
+  display: flex;
+  gap: 16px;
 }
 
 /* keyframes */
