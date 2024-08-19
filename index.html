@@ -19,7 +19,7 @@
   <body>
     <header>
       <h1>
-        <a href="/"> <img src="./assets/logo2.svg" alt="main logo" /></a>
+        <a href="/"> <img src="./assets/main-logo.svg" alt="main logo" /></a>
       </h1>
     </header>
     <div class="banner-con">
@@ -28,9 +28,18 @@
       </div>
     </div>
     <main>
-      <div class="search-form">
-        <input type="text" placeholder="음식 이름 또는 재료로 검색하세요." />
-        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      <div class="search-wrap">
+        <div id="search-form" class="search-form">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="음식 이름 또는 재료로 검색하세요."
+          />
+          <ul id="search-list" class="search-list"></ul>
+        </div>
+        <button id="search-btn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
       </div>
       <section class="category-con">
         <h2>카테고리</h2>
@@ -93,7 +102,7 @@
           </button>
         </div>
         <ul id="card-list"></ul>
-        <div class="pagination">
+        <div id="pagination" class="pagination">
           <button id="prev-btn" class="prev-btn">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
