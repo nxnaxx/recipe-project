@@ -59,7 +59,7 @@
         </ul>
       </section>
       <section class="cards-con">
-        <div class="loading">
+        <div id="loader" class="loader">
           <svg
             class="spinner"
             width="65px"
@@ -94,16 +94,11 @@
         </div>
         <ul id="card-list"></ul>
         <div class="pagination">
-          <button class="prev-btn">
+          <button id="prev-btn" class="prev-btn">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <button class="num-btn active">1</button>
-          <button class="num-btn">2</button>
-          <button class="num-btn">3</button>
-          <button class="num-btn">4</button>
-          <button class="num-btn">5</button>
-          <button class="num-btn">6</button>
-          <button class="next-btn">
+          <div id="page-num-btns" class="page-num-btns"></div>
+          <button id="next-btn" class="next-btn">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
