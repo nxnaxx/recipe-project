@@ -6,7 +6,6 @@ const $prevBtn = document.getElementById('prev-btn');
 const $nextBtn = document.getElementById('next-btn');
 
 const categoryCache = {};
-// const cardCount = {};
 let isLoading = false;
 
 const PAGE_SIZE = 30;
@@ -25,14 +24,17 @@ const fetchData = async (url) => {
 };
 
 const loadCards = (cards) => {
-  // const cards = categoryCache[currentCategory].pages[currentPage - 1];
   const fragment = document.createDocumentFragment();
 
   cards.forEach((recipe) => {
     const newCard = document.createElement('li');
     newCard.className = 'recipe-card';
     newCard.innerHTML = `
-      <button class="bookmark-btn">
+      <button class="bookmark-btn ${
+        localStorage.getItem('bookmark')?.includes(recipe.RCP_SEQ)
+          ? 'active'
+          : ''
+      }">
         <i class="fa-solid fa-bookmark"></i>
       </button>
       <div class="recipe-img">

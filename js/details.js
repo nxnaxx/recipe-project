@@ -1,4 +1,5 @@
 const $backToListBtn = document.getElementById('back-btn');
+const $bookmarkBtn = document.getElementById('bookmark-btn');
 // 새로고침 시 sessionStorage에 저장된 정보 불러오기 (api 재호출 방지)
 const storedData = sessionStorage.getItem('pageData');
 let recipeData = storedData ? JSON.parse(storedData) : null;
@@ -145,6 +146,12 @@ const renderPage = async () => {
   $category.textContent = recipeData.RCP_PAT2.replace('&', '/');
   $title.textContent = recipeData.RCP_NM;
 
+  // bookmark active 표시
+  const bookmark = localStorage.getItem('bookmark');
+  if (bookmark?.includes(recipeData.RCP_SEQ)) {
+    $bookmarkBtn.classList.add('active');
+  }
+
   // ATT_FILE_NO_MAIN이 없는 경우 ATT_FILE_NO_MK로 대체. 둘 다 없는 경우 no-image
   $mainImg.src =
     isImageFormat(recipeData.ATT_FILE_NO_MAIN) ||
@@ -168,4 +175,20 @@ $backToListBtn.addEventListener('click', () => {
   window.location.href = 'index.html';
 });
 
+// bookmark toggle
+const toggleBookmark = () => {
+  const storedValues = localStorage.getItem('bookmark');
+  const newValue = recipeData.RCP_SEQ;
+
+  bookmarks = storedValues ? JSON.parse(storedValues) : [];
+
+  if (bookmarks.includes(newValue)) {
+    bookmarks = bookmarks.filter((item) => item !== newValue);
+  } else bookmarks.push(newValue);
+
+  $bookmarkBtn.classList.toggle('active');
+  localStorage.setItem('bookmark', JSON.stringify(bookmarks));
+};
+
 renderPage();
+$bookmarkBtn.addEventListener('click', toggleBookmark);
