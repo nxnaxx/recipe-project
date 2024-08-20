@@ -17,3 +17,17 @@ node_modules/
 
 # API_KEY
 config.js
+
+# Yarn dependency directories
+node_modules/
+.yarn/
+
+# Yarn error and log files
+yarn-error.log
+yarn-debug.log*
+
+# Yarn Zero-Install configuration (optional)
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz

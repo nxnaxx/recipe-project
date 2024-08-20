@@ -8,6 +8,12 @@ const $pagination = document.getElementById('pagination');
 const $pageNumBtns = document.getElementById('page-num-btns');
 const $prevBtn = document.getElementById('prev-btn');
 const $nextBtn = document.getElementById('next-btn');
+const $roulette = document.getElementById('roulette');
+const $startBtn = document.getElementById('roulette-start');
+const $banner = document.getElementById('banner');
+const $rouletteContainer = document.getElementById('roulette-con');
+const $closeBtn = document.getElementById('close-modal');
+const $resetBtn = document.getElementById('roulette-reset');
 
 const categoryCache = {};
 const PAGE_SIZE = 30;
@@ -17,11 +23,15 @@ let isLoading = false;
 let currentCategory = '전체';
 let currentPage = 1;
 let totalPages = 1;
+const rouletteData = [];
+let currentRotation = 0;
 
-// API 데이터 가져오기
 const fetchData = async (url) => {
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return await response.json();
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -98,17 +108,26 @@ const createCardList = async (queryParams = {}) => {
   // api 요청 횟수 감소를 위해 카테고리 캐시 사용
   const cache = categoryCache[currentCategory];
   if (!cache) categoryCache[currentCategory] = { pages: [], total: 0 };
+
   if (!categoryCache[currentCategory].pages[currentPage - 1]) {
     const start = (currentPage - 1) * PAGE_SIZE + 1;
     const end = start + PAGE_SIZE - 1;
-    // mock server
-    const baseUrl = `https://b24ec182-58f9-4bde-932e-7428a89fac14.mock.pstmn.io/api/${API_KEY}/COOKRCP01/json/${start}/${end}`;
-    // const baseUrl = `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/${start}/${end}`;
-    const queryString = new URLSearchParams(queryParams).toString();
-    const data = await fetchData(`${baseUrl}/${queryString}`);
 
-    categoryCache[currentCategory].pages[currentPage - 1] = data.COOKRCP01.row;
-    categoryCache[currentCategory].total = Number(data.COOKRCP01.total_count);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const url = `/api/data?start=${encodeURIComponent(
+      start,
+    )}&end=${encodeURIComponent(end)}&${queryString}`;
+
+    const data = await fetchData(url);
+
+    if (data?.COOKRCP01?.row) {
+      categoryCache[currentCategory].pages[currentPage - 1] =
+        data.COOKRCP01.row;
+      categoryCache[currentCategory].total = Number(data.COOKRCP01.total_count);
+    } else {
+      categoryCache[currentCategory].pages[currentPage - 1] = [];
+      categoryCache[currentCategory].total = 0;
+    }
   }
 
   const cacheData = categoryCache[currentCategory];
@@ -156,11 +175,21 @@ const changePage = async (delta) => {
 
 /** 검색을 위한 초기 데이터 불러오기 */
 const getInitialData = async () => {
-  // mock-server
-  const url1 = `https://b24ec182-58f9-4bde-932e-7428a89fac14.mock.pstmn.io/api/${API_KEY}/COOKRCP01/json/1/1000/`;
-  const url2 = `https://b24ec182-58f9-4bde-932e-7428a89fac14.mock.pstmn.io/api/${API_KEY}/COOKRCP01/json/1001/2000/`;
-  const [data1, data2] = await Promise.all([fetchData(url1), fetchData(url2)]);
-  searchData = [...data1.COOKRCP01.row, ...data2.COOKRCP01.row];
+  try {
+    const url1 = `/api/data?start=1&end=1000`;
+    const url2 = `/api/data?start=1001&end=2000`;
+
+    const data1 = await fetchData(url1);
+    const data2 = await fetchData(url2);
+
+    const rows1 = data1?.COOKRCP01?.row || [];
+    const rows2 = data2?.COOKRCP01?.row || [];
+
+    return [...rows1, ...rows2];
+  } catch (error) {
+    console.error('Error getting initial data:', error);
+    return []; // 데이터 로딩 실패 시 빈 배열 반환
+  }
 };
 
 /** 검색 필터링 및 결과 표시 */
@@ -224,21 +253,101 @@ const displaySearchList = (e) => {
     : $searchList.classList.add('visible');
 };
 
-/** 검색 폼 외부 클릭 시 검색어 목록 숨기긱 */
+/** 검색 폼 외부 클릭 시 검색어 목록 숨기기 */
 const hideSearchList = (e) => {
   const $searchForm = document.getElementById('search-form');
   if (!$searchForm.contains(e.target)) $searchList.classList.remove('visible');
 };
 
+// /** 데이터가 로드된 후, 이벤트 리스너 추가 */
+const initializeSearch = async () => {
+  searchData = await getInitialData();
+
+  $searchInput.addEventListener('input', displaySearchList);
+  $searchInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') getSearchResults();
+  });
+  $searchBtn.addEventListener('click', getSearchResults);
+  document.addEventListener('click', hideSearchList);
+};
+
+// 룰렛 초기화
+const initialRoulette = () => {
+  const rouletteWidth = 400;
+  const angleOffset = -45;
+  const itemSize = 10; // 10개의 아이템
+  const d = 360 / itemSize;
+
+  for (let i = 0; i < itemSize; i++) {
+    const randomNum = Math.floor(Math.random() * 1124);
+    const color = i % 2 === 0 ? 'var(--primary-light)' : 'var(--white)';
+    rouletteData.push({ color, randomNum });
+  }
+
+  rouletteData.forEach((item, i) => {
+    const rt = (i + 1) * d + angleOffset;
+    const itemEl = document.createElement('div');
+    itemEl.className = 'roulette-item';
+    itemEl.style.position = 'absolute';
+    itemEl.style.top = `-212px`;
+    itemEl.style.left = `188px`;
+    itemEl.style.borderTopWidth = `${rouletteWidth}px`;
+    itemEl.style.borderRightWidth = `${
+      rouletteWidth / (1 / Math.tan((d * Math.PI) / 180))
+    }px`;
+    itemEl.style.borderTopColor = item.color;
+    itemEl.style.transform = `rotate(${rt}deg)`;
+
+    const pElement = document.createElement('p');
+    pElement.innerHTML = `<span class="label">${item.randomNum}</span>`;
+
+    itemEl.appendChild(pElement);
+    $roulette.appendChild(itemEl);
+  });
+};
+
+const toggleModal = () => {
+  $rouletteContainer.classList.toggle('open');
+};
+
+const getRandomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+// 룰렛 시작
+const rotateRoulette = () => {
+  const completeA = 360 * getRandomInt(5, 10) + getRandomInt(0, 360);
+  const startTime = performance.now(); // 애니메이션 시작 시간
+  const duration = 2500; // 애니메이션 지속 시간
+  const startAngle = currentRotation || 0; // 현재의 회전 각도 (초기값 0도)
+  const targetAngle = startAngle + completeA; // 회전 후의 목표 각도
+
+  function animate(time) {
+    const elapsed = time - startTime; // 경과 시간
+    const progress = Math.min(elapsed / duration, 1); // 진행 정도 (0~1)
+
+    const currentAngle = startAngle + (targetAngle - startAngle) * progress; // 현재 회전 각도 계산
+    $roulette.style.transform = `rotate(${currentAngle}deg)`; // CSS로 회전 적용
+
+    if (progress < 1) {
+      requestAnimationFrame(animate); // 애니메이션 프레임 요청
+    } else {
+      currentRotation = currentAngle % 360; // 회전이 끝난 후의 각도를 저장 (360도 내로 제한)
+    }
+  }
+
+  requestAnimationFrame(animate); // 애니메이션 시작
+};
+
+initializeSearch();
 createCardList();
-getInitialData();
+initialRoulette();
+
 $categoryList.addEventListener('click', handleCategoryClick);
 $pageNumBtns.addEventListener('click', handlePageClick);
 $prevBtn.addEventListener('click', () => changePage(-1));
 $nextBtn.addEventListener('click', () => changePage(1));
-$searchInput.addEventListener('input', displaySearchList);
-$searchInput.addEventListener('keyup', (e) => {
-  if (e.key === 'Enter') getSearchResults();
-});
-$searchBtn.addEventListener('click', getSearchResults);
-document.addEventListener('click', hideSearchList);
+$banner.addEventListener('click', toggleModal);
+$closeBtn.addEventListener('click', toggleModal);
+$startBtn.addEventListener('click', rotateRoulette);
+$resetBtn.addEventListener('click', initialRoulette);

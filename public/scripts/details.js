@@ -9,6 +9,9 @@ let isToastVisible = false;
 const fetchData = async (url) => {
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return await response.json();
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -126,15 +129,16 @@ const renderPage = async () => {
   const $reducedTip = document.getElementById('tip-content');
   const $tags = document.getElementById('tags');
 
-  // mock server
-  const baseUrl = `https://b24ec182-58f9-4bde-932e-7428a89fac14.mock.pstmn.io/api/${API_KEY}/COOKRCP01/json/1/1000`;
   const urlParams = new URLSearchParams(window.location.search);
   const recipeName = urlParams.get('recipeName');
 
   toggleLoading(true);
 
   if (!recipeData || recipeData.RCP_NM !== recipeName) {
-    const data = await fetchData(`${baseUrl}/RCP_NM=${recipeName}`);
+    const queryString = `RCP_NM=${encodeURIComponent(recipeName)}`;
+    const url = `/api/data?start=1&end=1000&${queryString}`;
+    const data = await fetchData(url);
+
     // recipeName과 완전히 동일한 데이터만 저장
     recipeData =
       data.COOKRCP01.total_count === '1'
