@@ -14,6 +14,7 @@
     <link rel="shortcut icon" href="#" />
     <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/index.css" />
+    <script src="./scripts/config.js" defer></script>
     <script src="./scripts/index.js" defer></script>
   </head>
   <body>
@@ -24,12 +25,12 @@
     </header>
     <div id="roulette-con" class="roulette-con">
       <div class="modal-backdrop"></div>
-      <div class="roulette-modal">
-        <div class="title">
-          <p>룰렛으로 메뉴를 정해보세요!</p>
-          <button id="close-modal"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="roulette-box">
+      <div id="roulette-modal" class="roulette-modal">
+        <button id="close-modal" class="close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <p class="title">룰렛으로 메뉴를 정해보세요!</p>
+        <div id="roulette-box" class="roulette-box">
           <div class="marker"></div>
           <button type="button" id="roulette-start" class="roulette-start">
             START
@@ -39,12 +40,7 @@
         <button id="roulette-reset" class="roulette-reset">
           <i class="fa-solid fa-arrows-rotate"></i>
         </button>
-        <!-- <div class="roulette-result">
-          새우 두부 계란찜
-          <button id="go-to-recipe" class="go-to-recipe">
-            레시피 바로가기
-          </button>
-        </div> -->
+        <div id="roulette-result" class="roulette-result"></div>
       </div>
     </div>
     <div class="banner-con">
