@@ -8,23 +8,15 @@ const $pagination = document.getElementById('pagination');
 const $pageNumBtns = document.getElementById('page-num-btns');
 const $prevBtn = document.getElementById('prev-btn');
 const $nextBtn = document.getElementById('next-btn');
-const $roulette = document.getElementById('roulette');
-const $startBtn = document.getElementById('roulette-start');
-const $banner = document.getElementById('banner');
-const $rouletteContainer = document.getElementById('roulette-con');
-const $closeBtn = document.getElementById('close-modal');
-const $resetBtn = document.getElementById('roulette-reset');
 
 const categoryCache = {};
 const PAGE_SIZE = 30;
 
-let searchData = [];
+//let searchData = [];
 let isLoading = false;
 let currentCategory = '전체';
 let currentPage = 1;
 let totalPages = 1;
-const rouletteData = [];
-let currentRotation = 0;
 
 const fetchData = async (url) => {
   try {
@@ -271,45 +263,77 @@ const initializeSearch = async () => {
   document.addEventListener('click', hideSearchList);
 };
 
+/**
+ * roulette game 구현
+ * - START 버튼 클릭 시 룰렛 애니메이션
+ * = 애니메이션 효과 종료 시 타겟 레시피 표시
+ * - 초기화 버튼 클릭 시 새 랜덤 메뉴 생성
+ * - 선택된 레시피 바로가기
+ */
+const $banner = document.getElementById('banner');
+const $rouletteContainer = document.getElementById('roulette-con');
+const $roulette = document.getElementById('roulette');
+const $startBtn = document.getElementById('roulette-start');
+const $rouletteResult = document.getElementById('roulette-result');
+const $resetBtn = document.getElementById('roulette-reset');
+const $closeBtn = document.getElementById('close-modal');
+
+const itemSize = 10; // 룰렛 메뉴 개수
+const rouletteData = [];
+let isOpened = false;
+
 // 룰렛 초기화
 const initialRoulette = () => {
-  const rouletteWidth = 400;
-  const angleOffset = -45;
-  const itemSize = 10; // 10개의 아이템
-  const d = 360 / itemSize;
+  const rouletteWidth = document.getElementById('roulette-box').offsetWidth;
+  const degree = 360 / itemSize; // 룰렛 아이템 각도
 
+  // 새 roulette 구성을 위한 기존 데이터 삭제
+  $roulette.innerHTML = '';
+  rouletteData.length = 0;
+  $rouletteResult.classList.remove('visible');
+
+  // 레시피 개수(1124) 범위 내 랜덤 인덱스 생성
   for (let i = 0; i < itemSize; i++) {
     const randomNum = Math.floor(Math.random() * 1124);
     const color = i % 2 === 0 ? 'var(--primary-light)' : 'var(--white)';
     rouletteData.push({ color, randomNum });
   }
 
+  const fragment = document.createDocumentFragment();
   rouletteData.forEach((item, i) => {
-    const rt = (i + 1) * d + angleOffset;
+    const rotateDeg = (360 / itemSize) * (i + 0.5); // 각 item이 균등한 영역을 차지하고 roulette target 중앙에 위치하도록 deg 조정
     const itemEl = document.createElement('div');
     itemEl.className = 'roulette-item';
-    itemEl.style.position = 'absolute';
-    itemEl.style.top = `-212px`;
-    itemEl.style.left = `188px`;
-    itemEl.style.borderTopWidth = `${rouletteWidth}px`;
+
+    // 부채꼴 모양 생성 tan(90deg-rad) = 1 / tan(rad) = y / x, rad = deg * pi / 180
     itemEl.style.borderRightWidth = `${
-      rouletteWidth / (1 / Math.tan((d * Math.PI) / 180))
+      rouletteWidth * Math.tan((degree * Math.PI) / 180)
     }px`;
     itemEl.style.borderTopColor = item.color;
-    itemEl.style.transform = `rotate(${rt}deg)`;
+    itemEl.style.transform = `rotate(${rotateDeg}deg)`;
 
-    const pElement = document.createElement('p');
-    pElement.innerHTML = `<span class="label">${item.randomNum}</span>`;
-
-    itemEl.appendChild(pElement);
-    $roulette.appendChild(itemEl);
+    // 룰렛 아이템에 랜덤 메뉴명 표시
+    itemEl.innerHTML = `<p><span class="label">${
+      searchData[item.randomNum].RCP_NM
+    }</span></p>`;
+    fragment.appendChild(itemEl);
   });
+  $roulette.appendChild(fragment);
+  $roulette.style.transform = ``;
 };
 
+// 룰렛 modal toggle
 const toggleModal = () => {
   $rouletteContainer.classList.toggle('open');
+  // modal open 시 룰렛 초기화
+  if (!isOpened) {
+    initialRoulette();
+    document.body.style.overflow = 'hidden';
+  } else document.body.style.overflow = '';
+  isOpened = !isOpened;
 };
 
+// 랜덤 정수 생성
 const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -318,30 +342,50 @@ const getRandomInt = (min, max) => {
 const rotateRoulette = () => {
   const completeA = 360 * getRandomInt(5, 10) + getRandomInt(0, 360);
   const startTime = performance.now(); // 애니메이션 시작 시간
-  const duration = 2500; // 애니메이션 지속 시간
-  const startAngle = currentRotation || 0; // 현재의 회전 각도 (초기값 0도)
-  const targetAngle = startAngle + completeA; // 회전 후의 목표 각도
+  const duration = 2000; // 애니메이션 지속 시간
+  const startAngle = $roulette.target || 0; // 룰렛의 현재 각도
+  const targetAngle = startAngle + completeA; // 목표 각도
 
-  function animate(time) {
+  const animate = (time) => {
     const elapsed = time - startTime; // 경과 시간
-    const progress = Math.min(elapsed / duration, 1); // 진행 정도 (0~1)
-
+    const progress = Math.min(elapsed / duration, 1); // 진행 정도 (0 ~ 1)
     const currentAngle = startAngle + (targetAngle - startAngle) * progress; // 현재 회전 각도 계산
-    $roulette.style.transform = `rotate(${currentAngle}deg)`; // CSS로 회전 적용
 
-    if (progress < 1) {
-      requestAnimationFrame(animate); // 애니메이션 프레임 요청
-    } else {
-      currentRotation = currentAngle % 360; // 회전이 끝난 후의 각도를 저장 (360도 내로 제한)
-    }
-  }
+    $roulette.style.transform = `rotate(${currentAngle}deg)`;
 
-  requestAnimationFrame(animate); // 애니메이션 시작
+    if (progress < 1) requestAnimationFrame(animate); // 애니메이션 프레임 요청
+    else completedAnimation(currentAngle);
+  };
+
+  const completedAnimation = (targetAngle) => {
+    const targetIdx =
+      itemSize - Math.ceil(((targetAngle % 360) + 360 / itemSize / 2) / 36);
+    const targetRecipeIdx = rouletteData[targetIdx].randomNum;
+
+    $rouletteResult.innerHTML = `
+      <div class="result-img">
+        <img src="${
+          searchData[targetRecipeIdx].ATT_FILE_NO_MAIN || '/assets/no-image.jpg'
+        }" />
+      </div>
+      <div class="result-content">
+        <p>${searchData[targetRecipeIdx].RCP_NM}</p>
+        <button id="go-to-recipe" class="go-to-recipe">레시피 바로가기</button>
+      </div>
+    `;
+    $rouletteResult
+      .querySelector('#go-to-recipe')
+      .addEventListener('click', () => {
+        window.location.href = `details.html?recipeName=${searchData[targetRecipeIdx].RCP_NM}`;
+      });
+    $rouletteResult.classList.add('visible');
+  };
+
+  requestAnimationFrame(animate);
 };
 
 initializeSearch();
 createCardList();
-initialRoulette();
 
 $categoryList.addEventListener('click', handleCategoryClick);
 $pageNumBtns.addEventListener('click', handlePageClick);

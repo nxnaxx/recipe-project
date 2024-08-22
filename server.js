@@ -15,6 +15,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// app.use(express.static('public'));
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
+});
 app.get('/api/data', async (req, res) => {
   try {
     const { start, end, ...queryParams } = req.query;
