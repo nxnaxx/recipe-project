@@ -129,7 +129,7 @@ const loadCards = (cards) => {
           <div class="category-tag">${recipe.RCP_PAT2.replace('&', '/')}</div>
         </div>
       </div>
-      <a href="details.html?recipeName=${recipe.RCP_NM}" id="details-link"></a>
+      <a href="/details?recipeName=${recipe.RCP_NM}" id="details-link"></a>
       `;
     fragment.appendChild(newCard);
   });
@@ -279,7 +279,7 @@ const displaySearchList = (e) => {
     const searchItem = document.createElement('li');
     searchItem.textContent = `${filteredData[i].RCP_NM}`;
     searchItem.addEventListener('click', () => {
-      window.location.href = `details.html?recipeName=${filteredData[i].RCP_NM}`;
+      window.location.href = `/details?recipeName=${filteredData[i].RCP_NM}`;
     });
     fragment.appendChild(searchItem);
   }
@@ -410,7 +410,7 @@ const rotateRoulette = () => {
     $rouletteResult
       .querySelector('#go-to-recipe')
       .addEventListener('click', () => {
-        window.location.href = `details.html?recipeName=${recipeData[targetRecipeIdx].RCP_NM}`;
+        window.location.href = `/details?recipeName=${recipeData[targetRecipeIdx].RCP_NM}`;
       });
     $rouletteResult.classList.add('visible');
   };
