@@ -1,3 +1,74 @@
+/* Loading */
+.loading-con {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-subtle);
+  font-size: 24px;
+}
+.loading-con p {
+  margin-bottom: 32px;
+}
+.loading-con p,
+.loading-con p > span {
+  font-size: var(--fs-2xl);
+  font-weight: vaR(--fw-sb);
+}
+.loading-con p > span {
+  color: var(--primary);
+}
+.loading-con .pan-loader {
+  width: 180px;
+  height: 180px;
+}
+.loading-con .loader {
+  position: relative;
+  top: 10%;
+  left: 0;
+  z-index: -1;
+  width: 60%;
+  height: 45%;
+  border: 8px solid transparent;
+  border-bottom: 8px solid var(--primary);
+  border-radius: 50%;
+  animation: loader 2s infinite;
+  animation-timing-function: linear;
+}
+.loading-con .pan-container {
+  display: flex;
+  width: 100%;
+  animation: pan 2s infinite;
+}
+.loading-con .pan {
+  width: 60%;
+  height: 24px;
+  background-color: var(--dark-1);
+  border-radius: 8px 8px 160px 160px;
+}
+.loading-con .handle {
+  width: 40%;
+  height: 10px;
+  background-color: var(--dark-1);
+  border-radius: 8px;
+}
+.loading-con .shadow {
+  position: relative;
+  top: 15%;
+  left: 15%;
+  width: 30%;
+  height: 8px;
+  background: var(--dark-3);
+  border-radius: 20px;
+  animation: shadow 2s infinite;
+}
+
 /* Banner */
 .banner-con {
   width: 100%;
@@ -223,9 +294,10 @@
   font-weight: var(--fw-m);
 }
 .go-to-recipe {
+  flex: 0 0 auto;
   width: fit-content;
   margin-left: auto;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 4px;
   background-color: var(--primary);
   color: var(--white);
@@ -368,7 +440,7 @@ main {
   padding-bottom: 120px;
   min-height: 1200px;
 }
-.cards-con .loader {
+.cards-con .circle-loader {
   display: none;
   justify-content: center;
   align-items: center;
@@ -580,4 +652,70 @@ main {
 .pagination .page-num-btns {
   display: flex;
   gap: 16px;
+}
+
+@keyframes loader {
+  0% {
+    width: 10%;
+    transform: rotate(0deg);
+  }
+  10% {
+    left: 0%;
+    transform: rotate(0deg);
+  }
+  20% {
+    width: 0%;
+    left: 20%;
+  }
+  30% {
+    width: 30%;
+  }
+  50% {
+    width: 35%;
+    left: 15%;
+  }
+  70% {
+    width: 35%;
+    left: 20%;
+    transform: rotate(240deg);
+  }
+  90% {
+    width: 30%;
+    left: 20%;
+  }
+  100% {
+    width: 2%;
+    left: 25%;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pan {
+  0% {
+    transform: rotate(0deg);
+    transform-origin: top right;
+  }
+  10% {
+    transform: rotate(-2deg);
+    transform-origin: top right;
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes shadow {
+  0% {
+    width: 30%;
+  }
+  50% {
+    width: 40%;
+    left: 20px;
+  }
+  100% {
+    width: 30%;
+  }
 }
