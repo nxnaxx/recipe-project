@@ -16,8 +16,23 @@ app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 });
+
+app.get('/details*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'details.html'), (err) => {
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+});
+
 app.get('/api/data', async (req, res) => {
   try {
     const { start, end, ...queryParams } = req.query;

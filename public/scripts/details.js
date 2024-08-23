@@ -178,7 +178,7 @@ const renderPage = async () => {
 };
 
 $backToListBtn.addEventListener('click', () => {
-  window.location.href = 'index.html';
+  window.location.href = '/';
 });
 
 // bookmark toggle
