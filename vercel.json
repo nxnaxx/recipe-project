@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "server.js",
+      "src": "api/data.js",
       "use": "@vercel/node"
     }
   ],
