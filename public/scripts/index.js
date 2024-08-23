@@ -11,8 +11,7 @@ const $nextBtn = document.getElementById('next-btn');
 
 const categoryCache = {};
 const PAGE_SIZE = 30;
-
-//let searchData = [];
+let recipeData = [];
 let isLoading = false;
 let currentCategory = '전체';
 let currentPage = 1;
@@ -30,8 +29,76 @@ const fetchData = async (url) => {
   }
 };
 
-const getQueryParams = (category) => {
-  return category === '전체' ? {} : { RCP_PAT2: `'${category}'` };
+const openDB = () => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('recipeDB', 1);
+
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('recipes')) {
+        db.createObjectStore('recipes', { keyPath: 'key' });
+      }
+    };
+    request.onsuccess = (e) => resolve(e.target.result);
+    request.onerror = (e) => {
+      reject('Error opening IndexedDB:', e.target.errorCode);
+    };
+  });
+};
+
+const storeIndexDB = async (key, data) => {
+  const db = await openDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['recipes'], 'readwrite');
+    const store = transaction.objectStore('recipes');
+    const request = store.put({ key: key, value: data });
+
+    request.onsuccess = () => resolve();
+    request.onerror = (e) => {
+      reject('Error storing data in IndexedDB:', e.target.errorCode);
+    };
+  });
+};
+
+const getDataFromIndexedDB = async (key) => {
+  const db = await openDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['recipes'], 'readonly');
+    const store = transaction.objectStore('recipes');
+    const request = store.get(key);
+
+    request.onsuccess = (e) => {
+      resolve(e.target.result ? e.target.result.value : null);
+    };
+
+    request.onerror = (e) => {
+      reject('Error retrieving data from IndexedDB:', e.target.errorCode);
+    };
+  });
+};
+
+/** 초기 데이터 불러오기 */
+const getInitialData = async () => {
+  try {
+    const savedData = await getDataFromIndexedDB('recipesData');
+    document.body.style.overflow = 'hidden';
+
+    if (sessionStorage.getItem('isTabOpen') && savedData.length > 0)
+      recipeData = savedData;
+    else {
+      const data1 = await fetchData(`/api/data?start=1&end=1000`);
+      const data2 = await fetchData(`/api/data?start=1001&end=2000`);
+      const rows1 = data1?.COOKRCP01?.row || [];
+      const rows2 = data2?.COOKRCP01?.row || [];
+
+      recipeData = [...rows1, ...rows2];
+      await storeIndexDB('recipesData', recipeData);
+    }
+  } catch (error) {
+    console.error('Error getting initial data:', error);
+  }
 };
 
 /** 카드 목록 표시 */
@@ -90,44 +157,41 @@ const updatePagination = () => {
 };
 
 // card list 생성
-const createCardList = async (queryParams = {}) => {
-  const $loader = document.getElementById('loader');
-
+const createCardList = () => {
+  const $loader = document.getElementById('circle-loader');
   isLoading = true;
   $cardList.innerHTML = '';
   $loader.style.display = 'flex';
 
-  // api 요청 횟수 감소를 위해 카테고리 캐시 사용
-  const cache = categoryCache[currentCategory];
-  if (!cache) categoryCache[currentCategory] = { pages: [], total: 0 };
+  let cache = categoryCache[currentCategory];
 
-  if (!categoryCache[currentCategory].pages[currentPage - 1]) {
-    const start = (currentPage - 1) * PAGE_SIZE + 1;
-    const end = start + PAGE_SIZE - 1;
+  if (!cache) {
+    const filterData =
+      currentCategory === '전체'
+        ? recipeData
+        : recipeData.filter((data) => data.RCP_PAT2 === currentCategory);
+    const pageCount = Math.ceil(filterData.length / PAGE_SIZE);
 
-    const queryString = new URLSearchParams(queryParams).toString();
-    const url = `/api/data?start=${encodeURIComponent(
-      start,
-    )}&end=${encodeURIComponent(end)}&${queryString}`;
+    // 캐시 초기화
+    categoryCache[currentCategory] = {
+      pages: [],
+      total: 0,
+    };
 
-    const data = await fetchData(url);
-
-    if (data?.COOKRCP01?.row) {
-      categoryCache[currentCategory].pages[currentPage - 1] =
-        data.COOKRCP01.row;
-      categoryCache[currentCategory].total = Number(data.COOKRCP01.total_count);
-    } else {
-      categoryCache[currentCategory].pages[currentPage - 1] = [];
-      categoryCache[currentCategory].total = 0;
+    for (let i = 0; i < pageCount; i++) {
+      const start = i * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      categoryCache[currentCategory].pages[i] = filterData.slice(start, end);
     }
+
+    categoryCache[currentCategory].total = filterData.length;
+    cache = categoryCache[currentCategory];
   }
 
-  const cacheData = categoryCache[currentCategory];
-  totalPages = Math.ceil(cacheData.total / PAGE_SIZE);
-
-  loadCards(cacheData.pages[currentPage - 1]);
+  totalPages = Math.ceil(categoryCache[currentCategory].total / PAGE_SIZE);
+  loadCards(cache.pages[currentPage - 1]);
   updatePagination();
-  $cardCount.textContent = cacheData.total.toLocaleString();
+  $cardCount.textContent = cache.total.toLocaleString();
   $loader.style.display = 'none';
   isLoading = false;
 };
@@ -144,7 +208,7 @@ const handleCategoryClick = async (e) => {
   currentCategory = li.dataset.name;
   currentPage = 1;
 
-  await createCardList(getQueryParams(currentCategory));
+  createCardList();
 };
 
 /** 페이지 번호 선택 */
@@ -153,34 +217,16 @@ const handlePageClick = async (e) => {
   if (!button || button.classList.contains('active')) return;
 
   currentPage = Number(button.dataset.num);
-  await createCardList(getQueryParams(currentCategory));
+  createCardList();
 };
 
 /** 이전, 다음 페이지 이동 */
 const changePage = async (delta) => {
   const newPage = currentPage + delta;
+
   if (newPage > 0 && newPage <= totalPages) {
     currentPage = newPage;
-    await createCardList(getQueryParams(currentCategory));
-  }
-};
-
-/** 검색을 위한 초기 데이터 불러오기 */
-const getInitialData = async () => {
-  try {
-    const url1 = `/api/data?start=1&end=1000`;
-    const url2 = `/api/data?start=1001&end=2000`;
-
-    const data1 = await fetchData(url1);
-    const data2 = await fetchData(url2);
-
-    const rows1 = data1?.COOKRCP01?.row || [];
-    const rows2 = data2?.COOKRCP01?.row || [];
-
-    return [...rows1, ...rows2];
-  } catch (error) {
-    console.error('Error getting initial data:', error);
-    return []; // 데이터 로딩 실패 시 빈 배열 반환
+    createCardList();
   }
 };
 
@@ -189,7 +235,7 @@ const getSearchResults = () => {
   const searchValue = $searchInput.value.trim();
 
   if (searchValue) {
-    const filteredData = searchData.filter((data) =>
+    const filteredData = recipeData.filter((data) =>
       data.RCP_PARTS_DTLS.includes(searchValue),
     );
 
@@ -220,7 +266,7 @@ const getSearchResults = () => {
 /** 검색어 목록 표시 */
 const displaySearchList = (e) => {
   const searchValue = e.target.value.trim();
-  const filteredData = searchData.filter((data) =>
+  const filteredData = recipeData.filter((data) =>
     data.RCP_NM.includes(searchValue),
   );
 
@@ -249,18 +295,6 @@ const displaySearchList = (e) => {
 const hideSearchList = (e) => {
   const $searchForm = document.getElementById('search-form');
   if (!$searchForm.contains(e.target)) $searchList.classList.remove('visible');
-};
-
-// /** 데이터가 로드된 후, 이벤트 리스너 추가 */
-const initializeSearch = async () => {
-  searchData = await getInitialData();
-
-  $searchInput.addEventListener('input', displaySearchList);
-  $searchInput.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') getSearchResults();
-  });
-  $searchBtn.addEventListener('click', getSearchResults);
-  document.addEventListener('click', hideSearchList);
 };
 
 /**
@@ -314,7 +348,7 @@ const initialRoulette = () => {
 
     // 룰렛 아이템에 랜덤 메뉴명 표시
     itemEl.innerHTML = `<p><span class="label">${
-      searchData[item.randomNum].RCP_NM
+      recipeData[item.randomNum].RCP_NM
     }</span></p>`;
     fragment.appendChild(itemEl);
   });
@@ -365,18 +399,18 @@ const rotateRoulette = () => {
     $rouletteResult.innerHTML = `
       <div class="result-img">
         <img src="${
-          searchData[targetRecipeIdx].ATT_FILE_NO_MAIN || '/assets/no-image.jpg'
+          recipeData[targetRecipeIdx].ATT_FILE_NO_MAIN || '/assets/no-image.jpg'
         }" />
       </div>
       <div class="result-content">
-        <p>${searchData[targetRecipeIdx].RCP_NM}</p>
+        <p>${recipeData[targetRecipeIdx].RCP_NM}</p>
         <button id="go-to-recipe" class="go-to-recipe">레시피 바로가기</button>
       </div>
     `;
     $rouletteResult
       .querySelector('#go-to-recipe')
       .addEventListener('click', () => {
-        window.location.href = `details.html?recipeName=${searchData[targetRecipeIdx].RCP_NM}`;
+        window.location.href = `details.html?recipeName=${recipeData[targetRecipeIdx].RCP_NM}`;
       });
     $rouletteResult.classList.add('visible');
   };
@@ -384,13 +418,24 @@ const rotateRoulette = () => {
   requestAnimationFrame(animate);
 };
 
-initializeSearch();
-createCardList();
+document.addEventListener('DOMContentLoaded', async () => {
+  await getInitialData();
+  sessionStorage.setItem('isTabOpen', 'true');
+  createCardList();
+  document.getElementById('loading-con').style.display = 'none';
+  document.body.style.overflow = '';
+});
 
 $categoryList.addEventListener('click', handleCategoryClick);
 $pageNumBtns.addEventListener('click', handlePageClick);
 $prevBtn.addEventListener('click', () => changePage(-1));
 $nextBtn.addEventListener('click', () => changePage(1));
+$searchInput.addEventListener('input', displaySearchList);
+$searchInput.addEventListener('keyup', (e) => {
+  if (e.key === 'Enter') getSearchResults();
+});
+$searchBtn.addEventListener('click', getSearchResults);
+document.addEventListener('click', hideSearchList);
 $banner.addEventListener('click', toggleModal);
 $closeBtn.addEventListener('click', toggleModal);
 $startBtn.addEventListener('click', rotateRoulette);

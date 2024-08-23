@@ -8,14 +8,13 @@ const path = require('path');
 const app = express();
 
 const corsOptions = {
-  origin: '*',
+  origin: 'https://openapi.foodsafetykorea.go.kr',
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(express.static('public'));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });

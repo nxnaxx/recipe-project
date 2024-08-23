@@ -14,10 +14,20 @@
     <link rel="shortcut icon" href="#" />
     <link rel="stylesheet" href="./styles/global.css" />
     <link rel="stylesheet" href="./styles/index.css" />
-    <script src="./scripts/config.js" defer></script>
     <script src="./scripts/index.js" defer></script>
   </head>
   <body>
+    <div id="loading-con" class="loading-con">
+      <p><span>레시피</span>를 불러오고 있어요</p>
+      <div class="pan-loader">
+        <div class="loader"></div>
+        <div class="pan-container">
+          <div class="pan"></div>
+          <div class="handle"></div>
+        </div>
+        <div class="shadow"></div>
+      </div>
+    </div>
     <header>
       <h1>
         <a href="/"><img src="./assets/main-logo.svg" alt="main logo" /></a>
@@ -74,7 +84,7 @@
           <li data-name="반찬">
             <img src="./assets/side-dish.svg" alt="반찬" /><span>반찬</span>
           </li>
-          <li data-name="국">
+          <li data-name="국&찌개">
             <img src="./assets/soup.svg" alt="국/찌개" /><span>국/찌개</span>
           </li>
           <li data-name="일품">
@@ -89,7 +99,7 @@
         </ul>
       </section>
       <section class="cards-con">
-        <div id="loader" class="loader">
+        <div id="circle-loader" class="circle-loader">
           <svg
             class="spinner"
             width="65px"
